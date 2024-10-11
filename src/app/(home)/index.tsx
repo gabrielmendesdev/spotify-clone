@@ -8,13 +8,13 @@ import "./style.css";
 
 export const SpotifyLayout: React.FC = (): React.ReactNode => {
   return (
-    <div className="h-[100dvh] grid grid-rows-12">
+    <div className="h-[100dvh]">
       <Sidebar />
-      <div className="w-full h-screen grid grid-cols-[min-content_auto] grid-rows-[5fr_1fr] bg-black col-row-11">
+      <div className="w-full h-[calc(100dvh-138px)] grid grid-cols-[min-content_auto] bg-black col-row-10">
         <YourLibrary />
         <Main />
-        <Footer />
       </div>
+      <Footer />
     </div>
   );
 };
