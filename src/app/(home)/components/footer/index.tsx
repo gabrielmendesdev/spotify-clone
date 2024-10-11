@@ -41,9 +41,9 @@ export const Footer: React.FC = () => {
   useEffect(() => {
     // Define uma música mock como exemplo
     setCurrentMusic({
-      image: "https://i.scdn.co/image/ab67616d0000485126f20b4d67c0c7b0f137ce4f",
-      name: "Solway Firth",
-      band: "Slipknot",
+      image: "https://i.scdn.co/image/ab67616d00001e0241b247657afb83a4bbea0edc",
+      name: "Só Fé",
+      band: "Grelo",
       currentTime: "0",
       totalTime: "5:55",
     });

@@ -73,6 +73,13 @@
 }
 
 @font-face {
+  font-family: 'SpotifyMixBlack';
+  src: url('/fonts/SpotifyMix-Black.woff') format('woff');
+  font-weight: 900;
+  font-style: normal;
+}
+
+@font-face {
   font-family: 'SpotifyMixBold';
   src: url('/fonts/SpotifyMix-Bold.woff') format('woff');
   font-weight: 700;
@@ -84,11 +91,28 @@
   src: url('/fonts/SpotifyMix-Medium.woff') format('woff');
   font-style: normal;
 }
+@font-face {
+  font-family: 'SpotifyMixRegular';
+  src: url('/fonts/SpotifyMix-Regular.woff') format('woff');
+  font-style: normal;
+}
 
 body {
   font-family: 'SpotifyMixLight', sans-serif;
 }
 
+.spotify-font-medium {
+  font-family: 'SpotifyMixMedium', sans-serif;
+}
+
+.spotify-font-regular {
+  font-family: 'SpotifyMixRegular', sans-serif;
+}
+
 .spotify-font-bold {
   font-family: 'SpotifyMixBold', sans-serif;
+}
+
+.spotify-font-black {
+  font-family: 'SpotifyMixBlack', sans-serif;
 }
