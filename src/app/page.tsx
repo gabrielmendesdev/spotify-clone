@@ -1,7 +1,7 @@
+import { SpotifyLayout } from "./(home)";
+
 export default function Home() {
   return (
-    <div>
-
-    </div>
+    <SpotifyLayout />
   );
 }
