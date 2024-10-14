@@ -16,7 +16,7 @@ import "./style.css";
 
 export const Sidebar: React.FC = (): React.ReactNode => {
   return (
-    <nav className="flex h-max items-center justify-between w-full p-1 px-4">
+    <nav className="grid grid-cols-3 h-max items-center justify-between w-full p-1 px-4">
       <div className="w-[72px]">
         <TooltipProvider>
           <Tooltip>

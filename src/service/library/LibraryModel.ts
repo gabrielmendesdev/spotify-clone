@@ -25,18 +25,6 @@ const fakePlaylistsData: Playlist[] = [
     name: "Rammstein",
     description: "Artista",
   },
-  {
-    coverImage:
-      "https://i.scdn.co/image/ab6761610000e5eb29af2ffb6f4ddd6324f878bc",
-    name: "Korn",
-    description: "Artista",
-  },
-  {
-    coverImage:
-      "https://i.scdn.co/image/ab6761610000e5eb654dc6b69f86aeb73527fc07",
-    name: "Matuê",
-    description: "Playlist-Gabriel",
-  },
 ];
 
 export const LibraryService = {

@@ -133,7 +133,7 @@ export const Footer: React.FC = () => {
   };
 
   return (
-    <div className="grid grid-cols-3 items-center p-3 gap-3">
+    <div className="grid grid-cols-3 items-center p-3 gap-3 col-span-2 row-start-2">
       <div className="flex items-center gap-3">
         {currentMusic?.image && (
           <Image
