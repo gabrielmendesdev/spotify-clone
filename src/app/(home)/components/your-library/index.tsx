@@ -28,14 +28,24 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import "./style.css";
+import { LibrarySkeleton } from "./components/skeleton";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 
-const [minWidth, maxWidth, defaultWidth] = [90, 500, 350];
+const [minWidth, maxWidth, defaultWidth] = [90, 800, 350];
 
 export default function YourLibrary() {
   const [width, setWidth] = useState(defaultWidth);
   const [playlists, setPlaylists] = useState<Playlist[]>([]);
   const [selectedPlaylistIndex, setSelectedPlaylistIndex] = useState<number>(0);
   const isResized = useRef(false);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   useEffect(() => {
     // Handle resizing
@@ -47,14 +57,20 @@ export default function YourLibrary() {
       setWidth((previousWidth) => {
         const newWidth = previousWidth + e.movementX / 2;
 
-        // Se o novo width for menor que 280px e o tamanho anterior for maior que 90px, trava para 90px
+        // Primeira lógica: de 90px para 280px
         if (newWidth < 280 && previousWidth > 90) {
-          return 90;
+          return 90; // Trava em 90px se diminuir para menos de 280px
+        }
+        if (previousWidth === 90 && newWidth > 90) {
+          return 280; // Aumenta diretamente para 280px se estiver aumentando a partir de 90px
         }
 
-        // Se o width for 90px e o usuário estiver aumentando, pula direto para 280px
-        if (previousWidth === 90 && newWidth > 90) {
-          return 280;
+        // Segunda lógica: de 420px para 584px
+        if (newWidth < 420 && previousWidth > 420) {
+          return 420; // Trava em 420px se diminuir para menos de 420px
+        }
+        if (previousWidth === 420 && newWidth > 420) {
+          return 584; // Aumenta diretamente para 584px se estiver aumentando a partir de 420px
         }
 
         // Checa se o novo width está dentro do intervalo permitido
@@ -85,11 +101,14 @@ export default function YourLibrary() {
   useEffect(() => {
     // Fetch user's playlists
     const fetchLibrary = async () => {
+      setIsLoading(true);
       try {
         const userLibrary = await getUserLibrary();
         setPlaylists(userLibrary.playlists);
       } catch (error) {
         console.error("Erro ao buscar a biblioteca do usuário:", error);
+      } finally {
+        setIsLoading(false);
       }
     };
 
@@ -234,47 +253,93 @@ export default function YourLibrary() {
           )}
           <div className="flex-grow overflow-hidden relative px-3">
             <div className="absolute inset-0 overflow-y-hidden p-2 hover:overflow-y-scroll scroll-container">
-              {playlists.length > 0 &&
-                playlists.map((playlist, index) => (
-                  <div
-                    key={index}
-                    className={`w-full flex items-center justify-start gap-2 cursor-pointer hover:bg-gray-500 hover:bg-opacity-20 rounded-md p-2 ${
-                      selectedPlaylistIndex === index
-                        ? "bg-gray-500 bg-opacity-20"
-                        : ""
-                    } ${width < 280 ? "justify-center" : ""}`}
-                    onClick={() => handlePlaylistClick(index)}
-                  >
-                    <Image
-                      src={playlist.coverImage}
-                      width={48}
-                      height={48}
-                      alt="Imagem de capa"
-                      className="rounded-md"
-                    />
-                    {width > 280 && (
-                      <>
-                        <div>
-                          <p
-                            className={`text-[0.9rem] spotify-font-medium ${
-                              index === selectedPlaylistIndex
-                                ? "text-green-500"
-                                : ""
-                            }`}
-                          >
-                            {playlist.name}
-                          </p>
-                          <p className="text-[0.75rem] text-gray-300">
-                            {playlist.description}
-                          </p>
-                        </div>
-                        {index === selectedPlaylistIndex && (
-                          <BiSolidVolumeFull className="text-green-500 text-lg ml-auto" />
-                        )}
-                      </>
+              {isLoading ? (
+                <LibrarySkeleton width={width} />
+              ) : (
+                playlists.length > 0 && (
+                  <Table>
+                    {/* Renderiza o TableHeader e as colunas de "Data de edição" e "Você ouviu" apenas quando width >= 584 */}
+                    {width >= 584 && (
+                      <TableHeader className="mb-2 hover:bg-transparent">
+                        <TableRow className="border-b-[1px] border-opacity-20 border-b-gray-400">
+                          <TableHead className="text-left text-[0.65rem] spotify-font-bold">
+                            Título
+                          </TableHead>
+                          <TableHead className="text-left text-[0.65rem] spotify-font-bold">
+                            Data de edição
+                          </TableHead>
+                          <TableHead className="text-right text-[0.65rem] spotify-font-bold">
+                            Você ouviu
+                          </TableHead>
+                        </TableRow>
+                      </TableHeader>
                     )}
-                  </div>
-                ))}
+
+                    <TableBody>
+                      {playlists.map((playlist, index) => (
+                        <TableRow
+                          key={index}
+                          className={`border-none cursor-pointer hover:bg-gray-500 hover:bg-opacity-20 rounded-md ${
+                            selectedPlaylistIndex === index
+                              ? "bg-gray-500 bg-opacity-20"
+                              : ""
+                          }`}
+                          onClick={() => handlePlaylistClick(index)}
+                        >
+                          <TableCell className="flex items-center gap-2">
+                            <Image
+                              src={playlist.coverImage}
+                              width={48}
+                              height={48}
+                              alt="Imagem de capa"
+                              className="rounded-md"
+                            />
+                            {width > 280 && (
+                              <>
+                                <div>
+                                  <p
+                                    className={`text-[0.9rem] spotify-font-medium ${
+                                      index === selectedPlaylistIndex
+                                        ? "text-green-500"
+                                        : ""
+                                    }`}
+                                  >
+                                    {playlist.name}
+                                  </p>
+                                  <p className="text-[0.75rem] text-gray-300">
+                                    {playlist.description}
+                                  </p>
+                                </div>
+                                {index === selectedPlaylistIndex && (
+                                  <BiSolidVolumeFull className="text-green-500 text-lg ml-auto" />
+                                )}
+                              </>
+                            )}
+                          </TableCell>
+
+                          {/* Renderiza as colunas de "Data de edição" e "Você ouviu" apenas quando width >= 584 */}
+                          {width >= 584 && (
+                            <>
+                              <TableCell>
+                                <p className="text-[0.75rem] text-gray-300">
+                                  {playlist.editedAt}
+                                </p>
+                              </TableCell>
+                              <TableCell>
+                                {playlist.editedAt ? (
+                                  <BiSolidVolumeFull className="text-green-500 text-lg ml-auto" />
+                                ) : (
+                                  <span className="text-gray-300">Não</span>
+                                )}
+                              </TableCell>
+                            </>
+                          )}
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                )
+              )}
             </div>
           </div>
         </div>
@@ -282,7 +347,10 @@ export default function YourLibrary() {
       <div
         className="w-1 cursor-col-resize bg-transparent hover:bg-gray-700"
         onMouseDown={() => {
-          isResized.current = true;
+          isResized.current = true; // Ativa o redimensionamento
+        }}
+        onMouseUp={() => {
+          isResized.current = false; // Garante que seja desativado ao soltar o mouse
         }}
       />
     </div>
