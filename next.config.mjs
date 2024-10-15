@@ -10,6 +10,14 @@ const nextConfig = {
         protocol: 'https',
         hostname: 'mosaic.scdn.co',
       },
+      {
+        protocol: 'https',
+        hostname: 'dailymix-images.scdn.co',
+      },
+      {
+        protocol: 'https',
+        hostname: 'seed-mix-image.spotifycdn.com', // Adicione esta linha
+      },
     ],
   },
 }

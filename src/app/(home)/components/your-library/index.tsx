@@ -9,10 +9,8 @@ import {
 import { IoMdAdd } from "react-icons/io";
 import { FaArrowRight } from "react-icons/fa";
 import { Button } from "@/components/ui/button";
-import { LibraryService } from "@/service/library/LibraryModel";
 import Image from "next/image";
 import { BiSolidVolumeFull } from "react-icons/bi";
-import { MyLibraryPlaylists, Playlist } from "@/service/library/LibraryService";
 import { IoList } from "react-icons/io5";
 import { RiSearchLine } from "react-icons/ri";
 import { BsList } from "react-icons/bs";
@@ -37,6 +35,8 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { Playlist, MyLibraryPlaylists } from "@/service/library/LibraryModel";
+import { LibraryService } from "@/service/library/LibraryService";
 
 const [minWidth, maxWidth, defaultWidth] = [90, 800, 350];
 
@@ -286,7 +286,7 @@ export default function YourLibrary() {
                           }`}
                           onClick={() => handlePlaylistClick(index)}
                         >
-                          <TableCell className="flex items-center gap-2">
+                          <TableCell className="flex items-center gap-2 p-2 rounded-md">
                             <Image
                               src={playlist.coverImage}
                               width={48}

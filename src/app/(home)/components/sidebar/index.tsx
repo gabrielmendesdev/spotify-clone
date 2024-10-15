@@ -80,7 +80,7 @@ export const Sidebar: React.FC = (): React.ReactNode => {
           </TooltipProvider>
         </div>
       </div>
-      <div className="flex items-center gap-5">
+      <div className="flex items-center justify-end gap-5">
         <div className="flex gap-1 items-center cursor-pointer hover:scale-105 transition-transform duration-300">
           <FaRegArrowAltCircleDown className="text-white text-2x1" />
           <p className="text-[0.8rem] spotify-font-bold">Instalar aplicativo</p>
