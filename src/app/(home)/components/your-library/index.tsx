@@ -37,6 +37,7 @@ import {
 } from "@/components/ui/table";
 import { Playlist, MyLibraryPlaylists } from "@/service/library/LibraryModel";
 import { LibraryService } from "@/service/library/LibraryService";
+import { useMobile } from "@/context/ViewportContext";
 
 const [minWidth, maxWidth, defaultWidth] = [90, 800, 350];
 
@@ -47,10 +48,12 @@ export default function YourLibrary() {
   const isResized = useRef(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
+  const { isMobile, isTablet } = useMobile();
+
   useEffect(() => {
     // Handle resizing
     const handleMouseMove = (e: MouseEvent) => {
-      if (!isResized.current) {
+      if (isTablet || !isResized.current) {
         return;
       }
 
@@ -91,7 +94,7 @@ export default function YourLibrary() {
       window.removeEventListener("mousemove", handleMouseMove);
       window.removeEventListener("mouseup", handleMouseUp);
     };
-  }, []);
+  }, [isTablet]);
 
   const getUserLibrary = async (): Promise<MyLibraryPlaylists> => {
     const response = await LibraryService.GetUserLibrary();
@@ -119,8 +122,14 @@ export default function YourLibrary() {
     setSelectedPlaylistIndex(index);
   };
 
+  useEffect(() => {
+    if (isTablet) {
+      setWidth(90);
+    }
+  }, [isTablet]);
+
   return (
-    <div className="flex h-full">
+    <div className={`flex h-full ${isMobile && "hidden"}`}>
       <div style={{ width: `${width / 16}rem` }} className="bg-[#121212] flex">
         <div className="flex flex-col w-full">
           <header className="w-full flex items-center justify-between p-4">

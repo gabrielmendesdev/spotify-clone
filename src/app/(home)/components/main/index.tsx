@@ -12,15 +12,20 @@ import {
 } from "@/service/library/LibraryModel";
 import { LibraryService } from "@/service/library/LibraryService";
 import Link from "next/link";
+import { Spinner } from "@/components/ui/spinner";
+import { useMobile } from "@/context/ViewportContext";
+import { Swiper, SwiperSlide } from "swiper/react";
 
 export const Main: React.FC = (): React.ReactNode => {
-  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
   const [playlists, setPlaylists] = useState<Playlist[]>([]);
   const [recommendations, setRecommendations] = useState<MusicRecommendation[]>(
     [],
   );
   const [columns, setColumns] = useState<number>(4);
   const containerRef = useRef<HTMLDivElement | null>(null);
+
+  const { isLargeScreen, isMobile, isTablet } = useMobile();
 
   const getUserLibrary = async (): Promise<MyLibraryPlaylists> => {
     const response = await LibraryService.GetUserLibrary();
@@ -93,9 +98,42 @@ export const Main: React.FC = (): React.ReactNode => {
     fetchRecommendations();
   }, []);
 
-  return (
-    <div className="bg-[#121212] overflow-y-auto">
-      <div className="w-full flex items-center justify-start p-3 gap-2 fixed ">
+  const [backgroundAtivo, setBackgroundAtivo] = useState(false);
+  const divRef = useRef<HTMLDivElement>(null);
+
+  const handleScroll = () => {
+    if (divRef.current !== null) {
+      const scrollTop = divRef.current.scrollTop;
+
+      if (scrollTop > 0) {
+        setBackgroundAtivo(true);
+      } else {
+        setBackgroundAtivo(false);
+      }
+    }
+  };
+
+  return isLoading ? (
+    <div className="bg-[#121212] overflow-y-auto flex items-center justify-center">
+      <Spinner className="text-white" />
+    </div>
+  ) : (
+    <div
+      className="overflow-y-auto"
+      onScroll={handleScroll}
+      ref={divRef}
+      style={{
+        backgroundColor: "#121212",
+        backgroundImage: "linear-gradient(to bottom, #2e2e2e, #121212)",
+        backgroundSize: "100% 200px",
+        backgroundRepeat: "no-repeat",
+      }}
+    >
+      <div
+        className={`w-full flex items-center justify-start p-3 gap-2 fixed transition-all duration-300 z-20 ${
+          backgroundAtivo ? "bg-[#2e2e2e]" : ""
+        }`}
+      >
         <Button
           type="button"
           className="rounded-2xl spotify-font-bold bg-gray-500 bg-opacity-20 hover:bg-opacity-30 hover:bg-gray-400 text-[0.8rem] p-2"
@@ -118,7 +156,7 @@ export const Main: React.FC = (): React.ReactNode => {
       <div className="w-full grid grid-cols-1 px-4 gap-4">
         <div
           ref={containerRef} // Referência do contêiner sendo observada
-          className={`w-full grid grid-cols-4 mt-[60px] gap-4`}
+          className={`w-full grid ${isMobile ? "grid-cols-2" : isTablet ? "grid-cols-3" : "grid-cols-4"} mt-[60px] gap-4`}
         >
           {playlists.length > 0 ? (
             playlists.slice(0, 8).map((playlist, index) => (
@@ -146,114 +184,258 @@ export const Main: React.FC = (): React.ReactNode => {
         </div>
         <div className="w-full mb-2">
           <div className="w-full flex justify-between items-center text-white">
-            <h1 className="spotify-font-bold text-2xl">Feito para Você</h1>
+            <h1 className="spotify-font-bold text-2xl">
+              Suas músicas estão com saudade
+            </h1>
             <Link
               href={"#"}
               className="spotify-font-bold text-sm hover:border-b-2"
             >
-              Motrar tudo
+              Mostrar tudo
             </Link>
           </div>
-          <div className="w-full grid grid-cols-7">
-            {recommendations.map((recommendation, index) => (
-              <div key={index} className="flex flex-col p-2 rounded-md gap-2">
-                <Image
-                  src={recommendation.coverImage}
-                  width={200}
-                  height={200}
-                  sizes="(max-with: 160px) 100%"
-                  style={{ objectFit: "cover" }}
-                  alt={`Album ${index + 1}`}
-                />
-                <p className="text-[0.75rem] text-gray-400 spotify-font-bold">
-                  {recommendation.description}
-                </p>
+
+          <div className="w-full">
+            {isMobile ? (
+              <Swiper
+                spaceBetween={10}
+                slidesPerView={2.5} // Quantidade de slides visíveis por vez
+                loop={true} // Swiper faz loop infinito
+              >
+                {recommendations.map((recommendation, index) => (
+                  <SwiperSlide key={index}>
+                    <div className="flex flex-col p-2 rounded-md gap-2">
+                      <Image
+                        src={recommendation.coverImage}
+                        width={200}
+                        height={200}
+                        sizes="(max-with: 160px) 100%"
+                        style={{ objectFit: "cover" }}
+                        alt={`Album ${index + 1}`}
+                      />
+                      <p className="text-[0.75rem] text-gray-400 spotify-font-bold">
+                        {recommendation.description}
+                      </p>
+                    </div>
+                  </SwiperSlide>
+                ))}
+              </Swiper>
+            ) : (
+              <div className="w-full grid grid-cols-7">
+                {recommendations
+                  .slice(0, isTablet ? 5 : recommendations.length)
+                  .map((recommendation, index) => (
+                    <div
+                      key={index}
+                      className="flex flex-col p-2 rounded-md gap-2"
+                    >
+                      <Image
+                        src={recommendation.coverImage}
+                        width={200}
+                        height={200}
+                        sizes="(max-with: 160px) 100%"
+                        style={{ objectFit: "cover" }}
+                        alt={`Album ${index + 1}`}
+                      />
+                      <p className="text-[0.75rem] text-gray-400 spotify-font-bold">
+                        {recommendation.description}
+                      </p>
+                    </div>
+                  ))}
               </div>
-            ))}
+            )}
           </div>
         </div>
         <div className="w-full mb-2">
           <div className="w-full flex justify-between items-center text-white">
-            <h1 className="spotify-font-bold text-2xl">Feito para Você</h1>
+            <h1 className="spotify-font-bold text-2xl">
+              Suas músicas estão com saudade
+            </h1>
             <Link
               href={"#"}
               className="spotify-font-bold text-sm hover:border-b-2"
             >
-              Motrar tudo
+              Mostrar tudo
             </Link>
           </div>
-          <div className="w-full grid grid-cols-7">
-            {recommendations.map((recommendation, index) => (
-              <div key={index} className="flex flex-col p-2 rounded-md gap-2">
-                <Image
-                  src={recommendation.coverImage}
-                  width={200}
-                  height={200}
-                  sizes="(max-with: 160px) 100%"
-                  style={{ objectFit: "cover" }}
-                  alt={`Album ${index + 1}`}
-                />
-                <p className="text-[0.75rem] text-gray-400 spotify-font-bold">
-                  {recommendation.description}
-                </p>
+
+          <div className="w-full">
+            {isMobile ? (
+              <Swiper
+                spaceBetween={10}
+                slidesPerView={2.5} // Quantidade de slides visíveis por vez
+                loop={true} // Swiper faz loop infinito
+              >
+                {recommendations.map((recommendation, index) => (
+                  <SwiperSlide key={index}>
+                    <div className="flex flex-col p-2 rounded-md gap-2">
+                      <Image
+                        src={recommendation.coverImage}
+                        width={200}
+                        height={200}
+                        sizes="(max-with: 160px) 100%"
+                        style={{ objectFit: "cover" }}
+                        alt={`Album ${index + 1}`}
+                      />
+                      <p className="text-[0.75rem] text-gray-400 spotify-font-bold">
+                        {recommendation.description}
+                      </p>
+                    </div>
+                  </SwiperSlide>
+                ))}
+              </Swiper>
+            ) : (
+              <div className="w-full grid grid-cols-7">
+                {recommendations
+                  .slice(0, isTablet ? 5 : recommendations.length)
+                  .map((recommendation, index) => (
+                    <div
+                      key={index}
+                      className="flex flex-col p-2 rounded-md gap-2"
+                    >
+                      <Image
+                        src={recommendation.coverImage}
+                        width={200}
+                        height={200}
+                        sizes="(max-with: 160px) 100%"
+                        style={{ objectFit: "cover" }}
+                        alt={`Album ${index + 1}`}
+                      />
+                      <p className="text-[0.75rem] text-gray-400 spotify-font-bold">
+                        {recommendation.description}
+                      </p>
+                    </div>
+                  ))}
               </div>
-            ))}
+            )}
           </div>
         </div>
         <div className="w-full mb-2">
           <div className="w-full flex justify-between items-center text-white">
-            <h1 className="spotify-font-bold text-2xl">Feito para Você</h1>
+            <h1 className="spotify-font-bold text-2xl">
+              Suas músicas estão com saudade
+            </h1>
             <Link
               href={"#"}
               className="spotify-font-bold text-sm hover:border-b-2"
             >
-              Motrar tudo
+              Mostrar tudo
             </Link>
           </div>
-          <div className="w-full grid grid-cols-7">
-            {recommendations.map((recommendation, index) => (
-              <div key={index} className="flex flex-col p-2 rounded-md gap-2">
-                <Image
-                  src={recommendation.coverImage}
-                  width={200}
-                  height={200}
-                  sizes="(max-with: 160px) 100%"
-                  style={{ objectFit: "cover" }}
-                  alt={`Album ${index + 1}`}
-                />
-                <p className="text-[0.75rem] text-gray-400 spotify-font-bold">
-                  {recommendation.description}
-                </p>
+
+          <div className="w-full">
+            {isMobile ? (
+              <Swiper
+                spaceBetween={10}
+                slidesPerView={2.5} // Quantidade de slides visíveis por vez
+                loop={true} // Swiper faz loop infinito
+              >
+                {recommendations.map((recommendation, index) => (
+                  <SwiperSlide key={index}>
+                    <div className="flex flex-col p-2 rounded-md gap-2">
+                      <Image
+                        src={recommendation.coverImage}
+                        width={200}
+                        height={200}
+                        sizes="(max-with: 160px) 100%"
+                        style={{ objectFit: "cover" }}
+                        alt={`Album ${index + 1}`}
+                      />
+                      <p className="text-[0.75rem] text-gray-400 spotify-font-bold">
+                        {recommendation.description}
+                      </p>
+                    </div>
+                  </SwiperSlide>
+                ))}
+              </Swiper>
+            ) : (
+              <div className="w-full grid grid-cols-7">
+                {recommendations
+                  .slice(0, isTablet ? 5 : recommendations.length)
+                  .map((recommendation, index) => (
+                    <div
+                      key={index}
+                      className="flex flex-col p-2 rounded-md gap-2"
+                    >
+                      <Image
+                        src={recommendation.coverImage}
+                        width={200}
+                        height={200}
+                        sizes="(max-with: 160px) 100%"
+                        style={{ objectFit: "cover" }}
+                        alt={`Album ${index + 1}`}
+                      />
+                      <p className="text-[0.75rem] text-gray-400 spotify-font-bold">
+                        {recommendation.description}
+                      </p>
+                    </div>
+                  ))}
               </div>
-            ))}
+            )}
           </div>
         </div>
         <div className="w-full mb-2">
           <div className="w-full flex justify-between items-center text-white">
-            <h1 className="spotify-font-bold text-2xl">Feito para Você</h1>
+            <h1 className="spotify-font-bold text-2xl">
+              Suas músicas estão com saudade
+            </h1>
             <Link
               href={"#"}
               className="spotify-font-bold text-sm hover:border-b-2"
             >
-              Motrar tudo
+              Mostrar tudo
             </Link>
           </div>
-          <div className="w-full grid grid-cols-7">
-            {recommendations.map((recommendation, index) => (
-              <div key={index} className="flex flex-col p-2 rounded-md gap-2">
-                <Image
-                  src={recommendation.coverImage}
-                  width={200}
-                  height={200}
-                  sizes="(max-with: 160px) 100%"
-                  style={{ objectFit: "cover" }}
-                  alt={`Album ${index + 1}`}
-                />
-                <p className="text-[0.75rem] text-gray-400 spotify-font-bold">
-                  {recommendation.description}
-                </p>
+
+          <div className="w-full">
+            {isMobile ? (
+              <Swiper
+                spaceBetween={10}
+                slidesPerView={2.5} // Quantidade de slides visíveis por vez
+                loop={true} // Swiper faz loop infinito
+              >
+                {recommendations.map((recommendation, index) => (
+                  <SwiperSlide key={index}>
+                    <div className="flex flex-col p-2 rounded-md gap-2">
+                      <Image
+                        src={recommendation.coverImage}
+                        width={200}
+                        height={200}
+                        sizes="(max-with: 160px) 100%"
+                        style={{ objectFit: "cover" }}
+                        alt={`Album ${index + 1}`}
+                      />
+                      <p className="text-[0.75rem] text-gray-400 spotify-font-bold">
+                        {recommendation.description}
+                      </p>
+                    </div>
+                  </SwiperSlide>
+                ))}
+              </Swiper>
+            ) : (
+              <div className="w-full grid grid-cols-7">
+                {recommendations
+                  .slice(0, isTablet ? 5 : recommendations.length)
+                  .map((recommendation, index) => (
+                    <div
+                      key={index}
+                      className="flex flex-col p-2 rounded-md gap-2"
+                    >
+                      <Image
+                        src={recommendation.coverImage}
+                        width={200}
+                        height={200}
+                        sizes="(max-with: 160px) 100%"
+                        style={{ objectFit: "cover" }}
+                        alt={`Album ${index + 1}`}
+                      />
+                      <p className="text-[0.75rem] text-gray-400 spotify-font-bold">
+                        {recommendation.description}
+                      </p>
+                    </div>
+                  ))}
               </div>
-            ))}
+            )}
           </div>
         </div>
       </div>

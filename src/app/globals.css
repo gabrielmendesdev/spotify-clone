@@ -99,6 +99,7 @@
 
 body {
   font-family: 'SpotifyMixLight', sans-serif;
+  user-select: none;
 }
 
 .spotify-font-medium {

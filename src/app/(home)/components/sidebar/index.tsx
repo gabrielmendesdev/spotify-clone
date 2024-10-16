@@ -13,10 +13,15 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import "./style.css";
+import { useMobile } from "@/context/ViewportContext";
 
 export const Sidebar: React.FC = (): React.ReactNode => {
+  const { isMobile } = useMobile();
+
   return (
-    <nav className="grid grid-cols-3 h-max items-center justify-between w-full p-1 px-4">
+    <nav
+      className={`grid grid-cols-3 h-max items-center justify-between w-full p-1 px-4 ${isMobile && "hidden"}`}
+    >
       <div className="w-[72px]">
         <TooltipProvider>
           <Tooltip>
