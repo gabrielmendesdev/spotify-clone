@@ -99,7 +99,7 @@ export const fakeMusicRecommendationsData: MusicRecommendation[] = [
   },
   {
     coverImage:
-      " https://dailymix-images.scdn.co/v2/img/ab6761610000e5ebc7e6bd9e65eab62a53355576/2/pt/default",
+      "https://dailymix-images.scdn.co/v2/img/ab6761610000e5ebc7e6bd9e65eab62a53355576/2/pt/default",
     description: "Linkin Park, Slipknot, Korn e mais",
   },
   {
@@ -114,7 +114,7 @@ export const fakeMusicRecommendationsData: MusicRecommendation[] = [
   },
   {
     coverImage:
-      " https://dailymix-images.scdn.co/v2/img/ab6761610000e5eb642bb35794af159840a9bd30/5/pt/default",
+      "https://dailymix-images.scdn.co/v2/img/ab6761610000e5eb642bb35794af159840a9bd30/5/pt/default",
     description: "Falling in Reverse, Pierce The Veil e mais",
   },
   {
