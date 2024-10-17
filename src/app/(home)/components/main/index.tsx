@@ -15,6 +15,7 @@ import Link from "next/link";
 import { Spinner } from "@/components/ui/spinner";
 import { useMobile } from "@/context/ViewportContext";
 import { Swiper, SwiperSlide } from "swiper/react";
+import { FaPlay } from "react-icons/fa";
 
 export const Main: React.FC = (): React.ReactNode => {
   const [isLoading, setIsLoading] = useState<boolean>(true);
@@ -153,7 +154,9 @@ export const Main: React.FC = (): React.ReactNode => {
           Podcasts
         </Button>
       </div>
-      <div className="w-full grid grid-cols-1 px-4 gap-4">
+      <div
+        className={`w-full grid grid-cols-1 px-4 gap-4 ${isMobile && "pb-[108px]"}`}
+      >
         <div
           ref={containerRef} // Referência do contêiner sendo observada
           className={`w-full grid ${isMobile ? "grid-cols-2" : isTablet ? "grid-cols-3" : "grid-cols-4"} mt-[60px] gap-4`}
@@ -204,7 +207,7 @@ export const Main: React.FC = (): React.ReactNode => {
               >
                 {recommendations.map((recommendation, index) => (
                   <SwiperSlide key={index}>
-                    <div className="flex flex-col p-2 rounded-md gap-2">
+                    <div className="flex flex-col p-2 rounded-md gap-2 cursor-pointer hover:bg-[#2e2e2e65]">
                       <Image
                         src={recommendation.coverImage}
                         width={200}
@@ -214,7 +217,9 @@ export const Main: React.FC = (): React.ReactNode => {
                         alt={`Album ${index + 1}`}
                       />
                       <p className="text-[0.75rem] text-gray-400 spotify-font-bold">
-                        {recommendation.description}
+                        {recommendation.description.length > 42
+                          ? `${recommendation.description.slice(0, 42)}...`
+                          : recommendation.description}
                       </p>
                     </div>
                   </SwiperSlide>
@@ -227,7 +232,7 @@ export const Main: React.FC = (): React.ReactNode => {
                   .map((recommendation, index) => (
                     <div
                       key={index}
-                      className="flex flex-col p-2 rounded-md gap-2"
+                      className="flex flex-col p-2 rounded-md gap-2 cursor-pointer hover:bg-[#2e2e2e65] relative group"
                     >
                       <Image
                         src={recommendation.coverImage}
@@ -237,8 +242,14 @@ export const Main: React.FC = (): React.ReactNode => {
                         style={{ objectFit: "cover" }}
                         alt={`Album ${index + 1}`}
                       />
+                      <div className="cursor-pointer hover:scale-105 transition-all duration-500 ease-in-out absolute right-[17px] bottom-[60px] opacity-0 translate-y-3 scale-75 group-hover:opacity-100 group-hover:translate-y-0 group-hover:scale-100 bg-[#54ff79] rounded-full p-2 flex items-center justify-center">
+                        <FaPlay className="text-black text-lg " />
+                      </div>
+
                       <p className="text-[0.75rem] text-gray-400 spotify-font-bold">
-                        {recommendation.description}
+                        {recommendation.description.length > 42
+                          ? `${recommendation.description.slice(0, 42)}...`
+                          : recommendation.description}
                       </p>
                     </div>
                   ))}
@@ -268,7 +279,7 @@ export const Main: React.FC = (): React.ReactNode => {
               >
                 {recommendations.map((recommendation, index) => (
                   <SwiperSlide key={index}>
-                    <div className="flex flex-col p-2 rounded-md gap-2">
+                    <div className="flex flex-col p-2 rounded-md gap-2 cursor-pointer hover:bg-[#2e2e2e65]">
                       <Image
                         src={recommendation.coverImage}
                         width={200}
@@ -278,7 +289,9 @@ export const Main: React.FC = (): React.ReactNode => {
                         alt={`Album ${index + 1}`}
                       />
                       <p className="text-[0.75rem] text-gray-400 spotify-font-bold">
-                        {recommendation.description}
+                        {recommendation.description.length > 42
+                          ? `${recommendation.description.slice(0, 42)}...`
+                          : recommendation.description}
                       </p>
                     </div>
                   </SwiperSlide>
@@ -291,7 +304,7 @@ export const Main: React.FC = (): React.ReactNode => {
                   .map((recommendation, index) => (
                     <div
                       key={index}
-                      className="flex flex-col p-2 rounded-md gap-2"
+                      className="flex flex-col p-2 rounded-md gap-2 cursor-pointer hover:bg-[#2e2e2e65] relative group"
                     >
                       <Image
                         src={recommendation.coverImage}
@@ -301,8 +314,14 @@ export const Main: React.FC = (): React.ReactNode => {
                         style={{ objectFit: "cover" }}
                         alt={`Album ${index + 1}`}
                       />
+                      <div className="cursor-pointer hover:scale-105 transition-all duration-500 ease-in-out absolute right-[17px] bottom-[60px] opacity-0 translate-y-3 scale-75 group-hover:opacity-100 group-hover:translate-y-0 group-hover:scale-100 bg-[#54ff79] rounded-full p-2 flex items-center justify-center">
+                        <FaPlay className="text-black text-lg " />
+                      </div>
+
                       <p className="text-[0.75rem] text-gray-400 spotify-font-bold">
-                        {recommendation.description}
+                        {recommendation.description.length > 42
+                          ? `${recommendation.description.slice(0, 42)}...`
+                          : recommendation.description}
                       </p>
                     </div>
                   ))}
@@ -332,7 +351,7 @@ export const Main: React.FC = (): React.ReactNode => {
               >
                 {recommendations.map((recommendation, index) => (
                   <SwiperSlide key={index}>
-                    <div className="flex flex-col p-2 rounded-md gap-2">
+                    <div className="flex flex-col p-2 rounded-md gap-2 cursor-pointer hover:bg-[#2e2e2e65]">
                       <Image
                         src={recommendation.coverImage}
                         width={200}
@@ -342,7 +361,9 @@ export const Main: React.FC = (): React.ReactNode => {
                         alt={`Album ${index + 1}`}
                       />
                       <p className="text-[0.75rem] text-gray-400 spotify-font-bold">
-                        {recommendation.description}
+                        {recommendation.description.length > 42
+                          ? `${recommendation.description.slice(0, 42)}...`
+                          : recommendation.description}
                       </p>
                     </div>
                   </SwiperSlide>
@@ -355,7 +376,7 @@ export const Main: React.FC = (): React.ReactNode => {
                   .map((recommendation, index) => (
                     <div
                       key={index}
-                      className="flex flex-col p-2 rounded-md gap-2"
+                      className="flex flex-col p-2 rounded-md gap-2 cursor-pointer hover:bg-[#2e2e2e65] relative group"
                     >
                       <Image
                         src={recommendation.coverImage}
@@ -365,8 +386,14 @@ export const Main: React.FC = (): React.ReactNode => {
                         style={{ objectFit: "cover" }}
                         alt={`Album ${index + 1}`}
                       />
+                      <div className="cursor-pointer hover:scale-105 transition-all duration-500 ease-in-out absolute right-[17px] bottom-[60px] opacity-0 translate-y-3 scale-75 group-hover:opacity-100 group-hover:translate-y-0 group-hover:scale-100 bg-[#54ff79] rounded-full p-2 flex items-center justify-center">
+                        <FaPlay className="text-black text-lg " />
+                      </div>
+
                       <p className="text-[0.75rem] text-gray-400 spotify-font-bold">
-                        {recommendation.description}
+                        {recommendation.description.length > 42
+                          ? `${recommendation.description.slice(0, 42)}...`
+                          : recommendation.description}
                       </p>
                     </div>
                   ))}
@@ -396,7 +423,7 @@ export const Main: React.FC = (): React.ReactNode => {
               >
                 {recommendations.map((recommendation, index) => (
                   <SwiperSlide key={index}>
-                    <div className="flex flex-col p-2 rounded-md gap-2">
+                    <div className="flex flex-col p-2 rounded-md gap-2 cursor-pointer hover:bg-[#2e2e2e65]">
                       <Image
                         src={recommendation.coverImage}
                         width={200}
@@ -406,7 +433,9 @@ export const Main: React.FC = (): React.ReactNode => {
                         alt={`Album ${index + 1}`}
                       />
                       <p className="text-[0.75rem] text-gray-400 spotify-font-bold">
-                        {recommendation.description}
+                        {recommendation.description.length > 42
+                          ? `${recommendation.description.slice(0, 42)}...`
+                          : recommendation.description}
                       </p>
                     </div>
                   </SwiperSlide>
@@ -419,7 +448,7 @@ export const Main: React.FC = (): React.ReactNode => {
                   .map((recommendation, index) => (
                     <div
                       key={index}
-                      className="flex flex-col p-2 rounded-md gap-2"
+                      className="flex flex-col p-2 rounded-md gap-2 cursor-pointer hover:bg-[#2e2e2e65] relative group"
                     >
                       <Image
                         src={recommendation.coverImage}
@@ -429,8 +458,14 @@ export const Main: React.FC = (): React.ReactNode => {
                         style={{ objectFit: "cover" }}
                         alt={`Album ${index + 1}`}
                       />
+                      <div className="cursor-pointer hover:scale-105 transition-all duration-500 ease-in-out absolute right-[17px] bottom-[60px] opacity-0 translate-y-3 scale-75 group-hover:opacity-100 group-hover:translate-y-0 group-hover:scale-100 bg-[#54ff79] rounded-full p-2 flex items-center justify-center">
+                        <FaPlay className="text-black text-lg " />
+                      </div>
+
                       <p className="text-[0.75rem] text-gray-400 spotify-font-bold">
-                        {recommendation.description}
+                        {recommendation.description.length > 42
+                          ? `${recommendation.description.slice(0, 42)}...`
+                          : recommendation.description}
                       </p>
                     </div>
                   ))}

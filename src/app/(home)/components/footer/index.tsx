@@ -3,7 +3,6 @@ import { CurrentMusic } from "@/service/CurrentMusicModel";
 import { formatTime } from "@/utils/formating/formatTime";
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
-import { FaCircleCheck } from "react-icons/fa6";
 import { IoIosPlayCircle } from "react-icons/io";
 import { IoPauseCircleSharp } from "react-icons/io5";
 import { BiSkipPrevious, BiSkipNext } from "react-icons/bi";
@@ -25,6 +24,12 @@ import { BsFullscreenExit } from "react-icons/bs";
 import { useMobile } from "@/context/ViewportContext";
 import { FaCheckCircle, FaPlay } from "react-icons/fa";
 import { FaPause } from "react-icons/fa6";
+import { RiSearch2Line } from "react-icons/ri";
+import { RiSearch2Fill } from "react-icons/ri";
+import { IoLibraryOutline } from "react-icons/io5";
+import { IoLibrarySharp } from "react-icons/io5";
+import { PiHouse } from "react-icons/pi";
+import { PiHouseFill } from "react-icons/pi";
 
 export const Footer: React.FC = () => {
   const [currentMusic, setCurrentMusic] = useState<CurrentMusic | undefined>();
@@ -42,6 +47,18 @@ export const Footer: React.FC = () => {
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
   const { isLargeScreen, isMobile } = useMobile();
+
+  const [selectedItem, setSelectedItem] = useState<string | null>(null);
+  const [isClicked, setIsClicked] = useState<string | null>(null);
+
+  const handleSelect = (item: string) => {
+    setSelectedItem(item);
+    setIsClicked(item);
+
+    setTimeout(() => {
+      setIsClicked(null);
+    }, 150);
+  };
 
   useEffect(() => {
     // Define uma música mock como exemplo
@@ -139,136 +156,310 @@ export const Footer: React.FC = () => {
 
   return (
     <div
-      className={`grid ${isMobile ? "grid-cols-2" : "grid-cols-3"} items-center p-3 col-span-2 row-start-2`}
+      className={`${isMobile ? "grid-cols-2 bg-[#00000000] fixed bottom-0 w-full z-50 p-0" : "grid-cols-3"} items-center col-span-2 row-start-2`}
     >
-      <div className="flex items-center gap-3">
-        {currentMusic?.image && (
-          <Image
-            src={currentMusic.image}
-            width={56}
-            height={56}
-            alt="Album Image"
-          />
-        )}
-        <div>
-          <p className="spotify-font-bold text-[0.75rem] text-[#fff]">
-            {currentMusic?.name}
-          </p>
-          <p className="text-[0.65rem] text-gray-300">{currentMusic?.band}</p>
+      <div
+        className={`grid ${isMobile ? "grid-cols-2 mx-3 bg-[#2c2c2c] p-2 rounded-lg pb-0" : "grid-cols-3 p-3"}`}
+      >
+        <div className="flex items-center gap-3">
+          {currentMusic?.image && (
+            <Image
+              src={currentMusic.image}
+              width={isMobile ? 38 : 56}
+              height={isMobile ? 38 : 56}
+              alt="Album Image"
+            />
+          )}
+          <div>
+            <p className="spotify-font-bold text-[0.75rem] text-[#fff]">
+              {currentMusic?.name}
+            </p>
+            <p className="text-[0.65rem] text-gray-300">{currentMusic?.band}</p>
+          </div>
         </div>
-        <FaCircleCheck />
-      </div>
-      {!isMobile && (
-        <div className="flex-1 flex-col justify-center">
-          <div className="w-full flex justify-center items-center gap-3">
-            <TooltipProvider>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <div className="relative flex flex-col items-center">
-                    <TiArrowShuffle
-                      onClick={handleRandom}
-                      className={`${isRandom ? "text-green-500" : "text-[#b3b3b3] hover:text-[white]"} text-[1.2rem] cursor-pointer hover:scale-105 transition-transform duration-300`}
-                    />
-                    {isRandom && (
-                      <span className="absolute bottom-[-5px] w-1 h-1 bg-green-500 rounded-full" />
-                    )}
-                  </div>
-                </TooltipTrigger>
-                <TooltipContent>
-                  <p>
-                    {isRandom
-                      ? "Desativar a ordem aleatória"
-                      : "Ativar a ordem aleatória"}
-                  </p>
-                </TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
-            <TooltipProvider>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <div>
-                    <BiSkipPrevious
-                      className="text-[#b3b3b3] text-4xl cursor-pointer hover:text-[white]"
-                      onClick={handlePrevious}
-                    />
-                  </div>
-                </TooltipTrigger>
-                <TooltipContent>
-                  <p>Voltar</p>
-                </TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
-
-            {isPlaying ? (
-              <TooltipProvider>
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <div>
-                      <IoPauseCircleSharp
-                        className="text-white text-4xl cursor-pointer hover:scale-105 transition-transform duration-300 hover:text-[#b3b3b3]"
-                        onClick={togglePlayPause}
-                      />
-                    </div>
-                  </TooltipTrigger>
-                  <TooltipContent>
-                    <p>Pausar</p>
-                  </TooltipContent>
-                </Tooltip>
-              </TooltipProvider>
-            ) : (
-              <TooltipProvider>
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <div>
-                      <IoIosPlayCircle
-                        className="text-white text-4xl cursor-pointer hover:scale-105 transition-transform duration-300 hover:text-[#b3b3b3]"
-                        onClick={togglePlayPause}
-                      />
-                    </div>
-                  </TooltipTrigger>
-                  <TooltipContent>
-                    <p>Play</p>
-                  </TooltipContent>
-                </Tooltip>
-              </TooltipProvider>
-            )}
-            <TooltipProvider>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <div>
-                    <BiSkipNext className="text-[#b3b3b3] text-4xl cursor-pointer hover:text-[white] hover:scale-105 transition-transform duration-300" />
-                  </div>
-                </TooltipTrigger>
-                <TooltipContent>
-                  <p>Avançar</p>
-                </TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
-            <div className="relative flex flex-col items-center">
+        {!isMobile && (
+          <div className="flex-1 flex-col justify-center">
+            <div className="w-full flex justify-center items-center gap-3">
               <TooltipProvider>
                 <Tooltip>
                   <TooltipTrigger asChild>
                     <div className="relative flex flex-col items-center">
-                      <SlLoop
-                        onClick={handleLoop}
-                        className={`${isLoop ? "text-green-500" : "text-[#b3b3b3] hover:text-[white]"} text-[1.2rem] cursor-pointer hover:scale-105 transition-transform duration-300`}
+                      <TiArrowShuffle
+                        onClick={handleRandom}
+                        className={`${isRandom ? "text-green-500" : "text-[#b3b3b3] hover:text-[white]"} text-[1.2rem] cursor-pointer hover:scale-105 transition-transform duration-300`}
                       />
-                      {isLoop && (
+                      {isRandom && (
                         <span className="absolute bottom-[-5px] w-1 h-1 bg-green-500 rounded-full" />
                       )}
                     </div>
                   </TooltipTrigger>
                   <TooltipContent>
-                    <p>{isLoop ? "Não repetir" : "Repetir"}</p>
+                    <p>
+                      {isRandom
+                        ? "Desativar a ordem aleatória"
+                        : "Ativar a ordem aleatória"}
+                    </p>
                   </TooltipContent>
                 </Tooltip>
               </TooltipProvider>
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <div>
+                      <BiSkipPrevious
+                        className="text-[#b3b3b3] text-4xl cursor-pointer hover:text-[white]"
+                        onClick={handlePrevious}
+                      />
+                    </div>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>Voltar</p>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+              {isPlaying ? (
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <div>
+                        <IoPauseCircleSharp
+                          className="text-white text-4xl cursor-pointer hover:scale-105 transition-transform duration-300 hover:text-[#b3b3b3]"
+                          onClick={togglePlayPause}
+                        />
+                      </div>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p>Pausar</p>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+              ) : (
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <div>
+                        <IoIosPlayCircle
+                          className="text-white text-4xl cursor-pointer hover:scale-105 transition-transform duration-300 hover:text-[#b3b3b3]"
+                          onClick={togglePlayPause}
+                        />
+                      </div>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p>Play</p>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+              )}
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <div>
+                      <BiSkipNext className="text-[#b3b3b3] text-4xl cursor-pointer hover:text-[white] hover:scale-105 transition-transform duration-300" />
+                    </div>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>Avançar</p>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+              <div className="relative flex flex-col items-center">
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <div className="relative flex flex-col items-center">
+                        <SlLoop
+                          onClick={handleLoop}
+                          className={`${isLoop ? "text-green-500" : "text-[#b3b3b3] hover:text-[white]"} text-[1.2rem] cursor-pointer hover:scale-105 transition-transform duration-300`}
+                        />
+                        {isLoop && (
+                          <span className="absolute bottom-[-5px] w-1 h-1 bg-green-500 rounded-full" />
+                        )}
+                      </div>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p>{isLoop ? "Não repetir" : "Repetir"}</p>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+              </div>
+            </div>
+            <div className="w-full flex gap-1">
+              <span className="text-white text-[0.65rem] w-[26px]">
+                {formatTime(currentTime)}
+              </span>
+              <Slider
+                value={[currentTime]}
+                onValueChange={handleSliderChange}
+                max={duration}
+                step={1}
+                className="w-full cursor-pointer"
+              />
+              <span className="text-white text-[0.65rem] w-[26px]">
+                {formatTime(duration)}
+              </span>
             </div>
           </div>
-          <div className="w-full flex gap-1">
-            <span className="text-white text-[0.65rem] w-[26px]">
-              {formatTime(currentTime)}
-            </span>
+        )}
+        <div className="w-full flex justify-end items-center gap-3">
+          {isLargeScreen && (
+            <>
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <div>
+                      <AiOutlinePlaySquare className="text-[#b3b3b3] text-lg cursor-pointer hover:text-[white] hover:scale-105 transition-transform duration-300" />
+                    </div>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>Tela tocando agora</p>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+              <div>
+                <LuMic2 className="text-[#b3b3b381] text-[1rem] hover:text-[#838383] hover:scale-105 transition-transform duration-300 cursor-not-allowed" />
+              </div>
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <div>
+                      <HiOutlineQueueList className="text-[#b3b3b3] text-lg cursor-pointer hover:text-[white] hover:scale-105 transition-transform duration-300" />
+                    </div>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>Fila</p>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <div>
+                      <PiDesktopTowerLight className="text-[#b3b3b3] text-lg cursor-pointer hover:text-[white] hover:scale-105 transition-transform duration-300" />
+                    </div>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>Conectar dispositivo</p>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+            </>
+          )}
+          {isMobile ? (
+            <div className="flex justify-end items-center gap-4">
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <div>
+                      <PiDesktopTowerLight className="text-[#b3b3b3] text-lg cursor-pointer hover:text-[white] hover:scale-105 transition-transform duration-300" />
+                    </div>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>Conectar dispositivo</p>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <div>
+                      <FaCheckCircle className="text-green-500 text-lg cursor-pointer hover:scale-105 transition-transform duration-300" />
+                    </div>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>Adicionar a playlist</p>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+              {isPlaying ? (
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <div>
+                        <FaPause
+                          className="text-white text-lg cursor-pointer hover:scale-105 transition-transform duration-300 hover:text-[#b3b3b3]"
+                          onClick={togglePlayPause}
+                        />
+                      </div>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p>Pausar</p>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+              ) : (
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <div>
+                        <FaPlay
+                          className="text-white text-[1rem] cursor-pointer hover:scale-105 transition-transform duration-300 hover:text-[#b3b3b3]"
+                          onClick={togglePlayPause}
+                        />
+                      </div>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p>Play</p>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+              )}
+            </div>
+          ) : (
+            <>
+              <div className="w-max flex gap-1">
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <div onClick={toggleMute}>
+                        {isMuted || volume === 0 ? (
+                          <CiVolumeMute className="text-[#b3b3b3] text-lg cursor-pointer hover:text-[white] hover:scale-105 transition-transform duration-300" />
+                        ) : (
+                          <CiVolumeHigh className="text-[#b3b3b3] text-lg cursor-pointer hover:text-[white] hover:scale-105 transition-transform duration-300" />
+                        )}
+                      </div>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p>{isMuted || volume === 0 ? "Com som" : "Mudo"}</p>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+                <Slider
+                  value={[volume]}
+                  onValueChange={handleVolumeChange}
+                  max={100}
+                  step={1}
+                  className="w-[93px] cursor-pointer"
+                />
+              </div>
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <div>
+                      <CgMiniPlayer className="text-[#b3b3b3] text-lg cursor-pointer hover:text-[white] hover:scale-105 transition-transform duration-300" />
+                    </div>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>Abrir miniplayer</p>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <div>
+                      <BsFullscreenExit className="text-[#b3b3b3] text-lg cursor-pointer hover:text-[white] hover:scale-105 transition-transform duration-300" />
+                    </div>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>Tela cheia</p>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+            </>
+          )}
+        </div>
+        {isMobile && (
+          <div className="col-span-2 pt-2">
             <Slider
               value={[currentTime]}
               onValueChange={handleSliderChange}
@@ -276,179 +467,74 @@ export const Footer: React.FC = () => {
               step={1}
               className="w-full cursor-pointer"
             />
-            <span className="text-white text-[0.65rem] w-[26px]">
-              {formatTime(duration)}
-            </span>
           </div>
-        </div>
-      )}
-      <div className="w-full flex justify-end items-center gap-3">
-        {isLargeScreen && (
-          <>
-            <TooltipProvider>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <div>
-                    <AiOutlinePlaySquare className="text-[#b3b3b3] text-lg cursor-pointer hover:text-[white] hover:scale-105 transition-transform duration-300" />
-                  </div>
-                </TooltipTrigger>
-                <TooltipContent>
-                  <p>Tela tocando agora</p>
-                </TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
-            <div>
-              <LuMic2 className="text-[#b3b3b381] text-[1rem] hover:text-[#838383] hover:scale-105 transition-transform duration-300 cursor-not-allowed" />
-            </div>
-            <TooltipProvider>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <div>
-                    <HiOutlineQueueList className="text-[#b3b3b3] text-lg cursor-pointer hover:text-[white] hover:scale-105 transition-transform duration-300" />
-                  </div>
-                </TooltipTrigger>
-                <TooltipContent>
-                  <p>Fila</p>
-                </TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
-            <TooltipProvider>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <div>
-                    <PiDesktopTowerLight className="text-[#b3b3b3] text-lg cursor-pointer hover:text-[white] hover:scale-105 transition-transform duration-300" />
-                  </div>
-                </TooltipTrigger>
-                <TooltipContent>
-                  <p>Conectar dispositivo</p>
-                </TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
-          </>
-        )}
-        {isMobile ? (
-          <div className="flex justify-end items-center gap-4">
-            <TooltipProvider>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <div>
-                    <PiDesktopTowerLight className="text-[#b3b3b3] text-2xl cursor-pointer hover:text-[white] hover:scale-105 transition-transform duration-300" />
-                  </div>
-                </TooltipTrigger>
-                <TooltipContent>
-                  <p>Conectar dispositivo</p>
-                </TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
-            <TooltipProvider>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <div>
-                    <FaCheckCircle className="text-green-500 text-2xl cursor-pointer hover:scale-105 transition-transform duration-300" />
-                  </div>
-                </TooltipTrigger>
-                <TooltipContent>
-                  <p>Adicionar a playlist</p>
-                </TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
-            {isPlaying ? (
-              <TooltipProvider>
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <div>
-                      <FaPause
-                        className="text-white text-2xl cursor-pointer hover:scale-105 transition-transform duration-300 hover:text-[#b3b3b3]"
-                        onClick={togglePlayPause}
-                      />
-                    </div>
-                  </TooltipTrigger>
-                  <TooltipContent>
-                    <p>Pausar</p>
-                  </TooltipContent>
-                </Tooltip>
-              </TooltipProvider>
-            ) : (
-              <TooltipProvider>
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <div>
-                      <FaPlay
-                        className="text-white text-lg cursor-pointer hover:scale-105 transition-transform duration-300 hover:text-[#b3b3b3]"
-                        onClick={togglePlayPause}
-                      />
-                    </div>
-                  </TooltipTrigger>
-                  <TooltipContent>
-                    <p>Play</p>
-                  </TooltipContent>
-                </Tooltip>
-              </TooltipProvider>
-            )}
-          </div>
-        ) : (
-          <>
-            <div className="w-max flex gap-1">
-              <TooltipProvider>
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <div onClick={toggleMute}>
-                      {isMuted || volume === 0 ? (
-                        <CiVolumeMute className="text-[#b3b3b3] text-lg cursor-pointer hover:text-[white] hover:scale-105 transition-transform duration-300" />
-                      ) : (
-                        <CiVolumeHigh className="text-[#b3b3b3] text-lg cursor-pointer hover:text-[white] hover:scale-105 transition-transform duration-300" />
-                      )}
-                    </div>
-                  </TooltipTrigger>
-                  <TooltipContent>
-                    <p>{isMuted || volume === 0 ? "Com som" : "Mudo"}</p>
-                  </TooltipContent>
-                </Tooltip>
-              </TooltipProvider>
-              <Slider
-                value={[volume]}
-                onValueChange={handleVolumeChange}
-                max={100}
-                step={1}
-                className="w-[93px] cursor-pointer"
-              />
-            </div>
-            <TooltipProvider>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <div>
-                    <CgMiniPlayer className="text-[#b3b3b3] text-lg cursor-pointer hover:text-[white] hover:scale-105 transition-transform duration-300" />
-                  </div>
-                </TooltipTrigger>
-                <TooltipContent>
-                  <p>Abrir miniplayer</p>
-                </TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
-            <TooltipProvider>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <div>
-                    <BsFullscreenExit className="text-[#b3b3b3] text-lg cursor-pointer hover:text-[white] hover:scale-105 transition-transform duration-300" />
-                  </div>
-                </TooltipTrigger>
-                <TooltipContent>
-                  <p>Tela cheia</p>
-                </TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
-          </>
         )}
       </div>
+
       {isMobile && (
-        <div className="col-span-2">
-          <Slider
-            value={[currentTime]}
-            onValueChange={handleSliderChange}
-            max={duration}
-            step={1}
-            className="w-full cursor-pointer"
-          />
+        <div
+          className="col-span-2 flex items-center justify-between gap-4 p-2 pb-1 px-20"
+          style={{
+            background:
+              "linear-gradient(to bottom, rgba(0, 0, 0, 0.8), rgba(0, 0, 0))",
+          }}
+        >
+          {/* Início */}
+          <div
+            className={`text-${selectedItem === "home" ? "white" : "[#dfdfdf]"} cursor-pointer`}
+            onClick={() => handleSelect("home")}
+          >
+            <div
+              className={`transition-transform duration-150 ease-out transform ${
+                isClicked === "home" ? "scale-95" : "scale-100"
+              } hover:text-white`}
+            >
+              {selectedItem === "home" ? (
+                <PiHouseFill className="text-2xl m-auto" />
+              ) : (
+                <PiHouse className="text-2xl m-auto" />
+              )}
+            </div>
+            <p className="text-[0.6rem]">Início</p>
+          </div>
+
+          {/* Pesquisar */}
+          <div
+            className={`text-${selectedItem === "search" ? "white" : "[#dfdfdf]"} cursor-pointer`}
+            onClick={() => handleSelect("search")}
+          >
+            <div
+              className={`transition-transform duration-150 ease-out transform ${
+                isClicked === "search" ? "scale-95" : "scale-100"
+              } hover:text-white`}
+            >
+              {selectedItem === "search" ? (
+                <RiSearch2Fill className="text-2xl m-auto" />
+              ) : (
+                <RiSearch2Line className="text-2xl m-auto" />
+              )}
+            </div>
+            <p className="text-[0.6rem]">Pesquisar</p>
+          </div>
+
+          {/* Biblioteca */}
+          <div
+            className={`text-${selectedItem === "library" ? "white" : "[#dfdfdf]"} [#dfdfdf] cursor-pointer`}
+            onClick={() => handleSelect("library")}
+          >
+            <div
+              className={`transition-transform duration-150 ease-out transform ${
+                isClicked === "library" ? "scale-95" : "scale-100"
+              } hover:text-white`}
+            >
+              {selectedItem === "library" ? (
+                <IoLibrarySharp className="text-2xl m-auto" />
+              ) : (
+                <IoLibraryOutline className="text-2xl m-auto" />
+              )}
+            </div>
+            <p className="text-[0.6rem]">Sua biblioteca</p>
+          </div>
         </div>
       )}
     </div>

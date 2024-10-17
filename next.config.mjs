@@ -17,6 +17,9 @@ const nextConfig = {
       {
         protocol: 'https',
         hostname: 'seed-mix-image.spotifycdn.com', // Adicione esta linha
+      },      {
+        protocol: 'https',
+        hostname: 'newjams-images.scdn.co', // Adicione esta linha
       },
     ],
   },

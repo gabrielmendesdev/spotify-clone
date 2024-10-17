@@ -109,6 +109,11 @@ export const fakeMusicRecommendationsData: MusicRecommendation[] = [
   },
   {
     coverImage:
+      "https://dailymix-images.scdn.co/v2/img/ab6761610000e5ebf0c20db5ef6c6fbe5135d2e4/4/pt/default",
+    description: "Ghostmane, Bring Me The Horizon e mais",
+  },
+  {
+    coverImage:
       " https://dailymix-images.scdn.co/v2/img/ab6761610000e5eb642bb35794af159840a9bd30/5/pt/default",
     description: "Falling in Reverse, Pierce The Veil e mais",
   },
@@ -117,14 +122,11 @@ export const fakeMusicRecommendationsData: MusicRecommendation[] = [
       "https://dailymix-images.scdn.co/v2/img/ab6761610000e5eb24c28a3c4203b9854046e31e/6/pt/default",
     description: "DJ Arana, DJ Dozabri, MC Hariel e mais",
   },
+
   {
     coverImage:
-      "https://seed-mix-image.spotifycdn.com/v6/img/twenty_tens/3uL4UpqShC4p2x1dJutoRW/pt/default",
-    description: "Ghostmane, Bring Me The Horizon e mais",
-  },
-  {
-    coverImage:
-      "https://seed-mix-image.spotifycdn.com/v6/img/upbeat/3fMbdgg4jU18AjLCKBhRSm/pt/default",
-    description: "Michael Jackson, mM83, Spektrem e mais",
+      "https://newjams-images.scdn.co/image/ab67647800003f8a/dt/v3/release-radar/ab6761610000e5eb04cf87665430b465b8c9c1b4/en",
+    description:
+      "Catch all the latest music from artists you follow, plus new singles picked for you. Updates every Friday.",
   },
 ];
