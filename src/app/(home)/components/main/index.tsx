@@ -215,6 +215,7 @@ export const Main: React.FC = (): React.ReactNode => {
                         sizes="(max-with: 160px) 100%"
                         style={{ objectFit: "cover" }}
                         alt={`Album ${index + 1}`}
+                        className="rounded-md"
                       />
                       <p className="text-[0.75rem] text-gray-400 spotify-font-bold">
                         {recommendation.description.length > 42
@@ -241,6 +242,7 @@ export const Main: React.FC = (): React.ReactNode => {
                         sizes="(max-with: 160px) 100%"
                         style={{ objectFit: "cover" }}
                         alt={`Album ${index + 1}`}
+                        className="rounded-md"
                       />
                       <div className="cursor-pointer hover:scale-105 transition-all duration-500 ease-in-out absolute right-[17px] bottom-[60px] opacity-0 translate-y-3 scale-75 group-hover:opacity-100 group-hover:translate-y-0 group-hover:scale-100 bg-[#54ff79] rounded-full p-2 flex items-center justify-center">
                         <FaPlay className="text-black text-lg " />
@@ -287,6 +289,7 @@ export const Main: React.FC = (): React.ReactNode => {
                         sizes="(max-with: 160px) 100%"
                         style={{ objectFit: "cover" }}
                         alt={`Album ${index + 1}`}
+                        className="rounded-md"
                       />
                       <p className="text-[0.75rem] text-gray-400 spotify-font-bold">
                         {recommendation.description.length > 42
@@ -313,6 +316,7 @@ export const Main: React.FC = (): React.ReactNode => {
                         sizes="(max-with: 160px) 100%"
                         style={{ objectFit: "cover" }}
                         alt={`Album ${index + 1}`}
+                        className="rounded-md"
                       />
                       <div className="cursor-pointer hover:scale-105 transition-all duration-500 ease-in-out absolute right-[17px] bottom-[60px] opacity-0 translate-y-3 scale-75 group-hover:opacity-100 group-hover:translate-y-0 group-hover:scale-100 bg-[#54ff79] rounded-full p-2 flex items-center justify-center">
                         <FaPlay className="text-black text-lg " />
@@ -359,6 +363,7 @@ export const Main: React.FC = (): React.ReactNode => {
                         sizes="(max-with: 160px) 100%"
                         style={{ objectFit: "cover" }}
                         alt={`Album ${index + 1}`}
+                        className="rounded-md"
                       />
                       <p className="text-[0.75rem] text-gray-400 spotify-font-bold">
                         {recommendation.description.length > 42
@@ -385,6 +390,7 @@ export const Main: React.FC = (): React.ReactNode => {
                         sizes="(max-with: 160px) 100%"
                         style={{ objectFit: "cover" }}
                         alt={`Album ${index + 1}`}
+                        className="rounded-md"
                       />
                       <div className="cursor-pointer hover:scale-105 transition-all duration-500 ease-in-out absolute right-[17px] bottom-[60px] opacity-0 translate-y-3 scale-75 group-hover:opacity-100 group-hover:translate-y-0 group-hover:scale-100 bg-[#54ff79] rounded-full p-2 flex items-center justify-center">
                         <FaPlay className="text-black text-lg " />
@@ -431,6 +437,7 @@ export const Main: React.FC = (): React.ReactNode => {
                         sizes="(max-with: 160px) 100%"
                         style={{ objectFit: "cover" }}
                         alt={`Album ${index + 1}`}
+                        className="rounded-md"
                       />
                       <p className="text-[0.75rem] text-gray-400 spotify-font-bold">
                         {recommendation.description.length > 42
@@ -457,6 +464,7 @@ export const Main: React.FC = (): React.ReactNode => {
                         sizes="(max-with: 160px) 100%"
                         style={{ objectFit: "cover" }}
                         alt={`Album ${index + 1}`}
+                        className="rounded-md"
                       />
                       <div className="cursor-pointer hover:scale-105 transition-all duration-500 ease-in-out absolute right-[17px] bottom-[60px] opacity-0 translate-y-3 scale-75 group-hover:opacity-100 group-hover:translate-y-0 group-hover:scale-100 bg-[#54ff79] rounded-full p-2 flex items-center justify-center">
                         <FaPlay className="text-black text-lg " />

@@ -154,6 +154,64 @@ export const Footer: React.FC = () => {
     }
   };
 
+  const toggleFullScreen = () => {
+    const element = document.documentElement; // Seleciona o elemento root (html)
+
+    if (!document.fullscreenElement) {
+      // Entra no modo tela cheia
+      if (element.requestFullscreen) {
+        element.requestFullscreen();
+      } else if (
+        (element as HTMLElement & { mozRequestFullScreen?: () => void })
+          .mozRequestFullScreen
+      ) {
+        // Para Firefox antigo
+        (element as HTMLElement & { mozRequestFullScreen?: () => void })
+          .mozRequestFullScreen!();
+      } else if (
+        (element as HTMLElement & { webkitRequestFullscreen?: () => void })
+          .webkitRequestFullscreen
+      ) {
+        // Para Chrome, Safari e Opera antigos
+        (element as HTMLElement & { webkitRequestFullscreen?: () => void })
+          .webkitRequestFullscreen!();
+      } else if (
+        (element as HTMLElement & { msRequestFullscreen?: () => void })
+          .msRequestFullscreen
+      ) {
+        // Para IE/Edge antigos
+        (element as HTMLElement & { msRequestFullscreen?: () => void })
+          .msRequestFullscreen!();
+      }
+    } else {
+      // Sai do modo tela cheia
+      if (document.exitFullscreen) {
+        document.exitFullscreen();
+      } else if (
+        (document as Document & { mozCancelFullScreen?: () => void })
+          .mozCancelFullScreen
+      ) {
+        // Para Firefox antigo
+        (document as Document & { mozCancelFullScreen?: () => void })
+          .mozCancelFullScreen!();
+      } else if (
+        (document as Document & { webkitExitFullscreen?: () => void })
+          .webkitExitFullscreen
+      ) {
+        // Para Chrome, Safari e Opera antigos
+        (document as Document & { webkitExitFullscreen?: () => void })
+          .webkitExitFullscreen!();
+      } else if (
+        (document as Document & { msExitFullscreen?: () => void })
+          .msExitFullscreen
+      ) {
+        // Para IE/Edge antigos
+        (document as Document & { msExitFullscreen?: () => void })
+          .msExitFullscreen!();
+      }
+    }
+  };
+
   return (
     <div
       className={`${isMobile ? "grid-cols-2 bg-[#00000000] fixed bottom-0 w-full z-50 p-0" : "grid-cols-3"} items-center col-span-2 row-start-2`}
@@ -446,7 +504,7 @@ export const Footer: React.FC = () => {
               <TooltipProvider>
                 <Tooltip>
                   <TooltipTrigger asChild>
-                    <div>
+                    <div onClick={toggleFullScreen}>
                       <BsFullscreenExit className="text-[#b3b3b3] text-lg cursor-pointer hover:text-[white] hover:scale-105 transition-transform duration-300" />
                     </div>
                   </TooltipTrigger>
@@ -481,7 +539,7 @@ export const Footer: React.FC = () => {
         >
           {/* Início */}
           <div
-            className={`text-${selectedItem === "home" ? "white" : "[#dfdfdf]"} cursor-pointer`}
+            className={`text-white cursor-pointer`}
             onClick={() => handleSelect("home")}
           >
             <div
@@ -500,7 +558,7 @@ export const Footer: React.FC = () => {
 
           {/* Pesquisar */}
           <div
-            className={`text-${selectedItem === "search" ? "white" : "[#dfdfdf]"} cursor-pointer`}
+            className={`text-white cursor-pointer`}
             onClick={() => handleSelect("search")}
           >
             <div
@@ -519,7 +577,7 @@ export const Footer: React.FC = () => {
 
           {/* Biblioteca */}
           <div
-            className={`text-${selectedItem === "library" ? "white" : "[#dfdfdf]"} [#dfdfdf] cursor-pointer`}
+            className={`text-white [#dfdfdf] cursor-pointer`}
             onClick={() => handleSelect("library")}
           >
             <div
