@@ -18,3 +18,13 @@ export interface MusicRecommendation {
 export interface MusicRecommendations {
   recommendations: MusicRecommendation[];
 }
+
+export interface GenericLongingSong {
+  coverImage: string;
+  name: string;
+  description: string;
+}
+
+export interface GenericLongingSongs {
+  recommendations: GenericLongingSong[];
+}

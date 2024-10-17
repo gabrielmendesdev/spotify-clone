@@ -9,6 +9,8 @@ import {
   MyLibraryPlaylists,
   MusicRecommendation,
   MusicRecommendations,
+  GenericLongingSong,
+  GenericLongingSongs,
 } from "@/service/library/LibraryModel";
 import { LibraryService } from "@/service/library/LibraryService";
 import Link from "next/link";
@@ -20,11 +22,15 @@ import { FaPlay } from "react-icons/fa";
 export const Main: React.FC = (): React.ReactNode => {
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [playlists, setPlaylists] = useState<Playlist[]>([]);
+  const [columns, setColumns] = useState<number>(4);
+  const containerRef = useRef<HTMLDivElement | null>(null);
+
   const [recommendations, setRecommendations] = useState<MusicRecommendation[]>(
     [],
   );
-  const [columns, setColumns] = useState<number>(4);
-  const containerRef = useRef<HTMLDivElement | null>(null);
+  const [longingSongs, setLongingSongs] = useState<GenericLongingSong[]>([]);
+  const [recentPlayeds, setRecentPlayeds] = useState<GenericLongingSong[]>([]);
+  const [mixes, setMixes] = useState<MusicRecommendation[]>([]);
 
   const { isLargeScreen, isMobile, isTablet } = useMobile();
 
@@ -35,6 +41,21 @@ export const Main: React.FC = (): React.ReactNode => {
 
   const getUserRecommendations = async (): Promise<MusicRecommendations> => {
     const response = await LibraryService.GetUserRecommendations();
+    return response;
+  };
+
+  const getUserLongingSongs = async (): Promise<GenericLongingSongs> => {
+    const response = await LibraryService.GetUserLongingSongs();
+    return response;
+  };
+
+  const getUserRecentPlayeds = async (): Promise<GenericLongingSongs> => {
+    const response = await LibraryService.GetUserRecentPlayeds();
+    return response;
+  };
+
+  const getUserMixes = async (): Promise<MusicRecommendations> => {
+    const response = await LibraryService.GetUserMixes();
     return response;
   };
 
@@ -97,6 +118,54 @@ export const Main: React.FC = (): React.ReactNode => {
     };
 
     fetchRecommendations();
+  }, []);
+
+  useEffect(() => {
+    const fetchLongingSongs = async () => {
+      setIsLoading(true);
+      try {
+        const userLongingSongs = await getUserLongingSongs();
+        setLongingSongs(userLongingSongs.recommendations);
+      } catch (error) {
+        console.error("Erro ao buscar a biblioteca do usuário:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchLongingSongs();
+  }, []);
+
+  useEffect(() => {
+    const fetchRecentPlayeds = async () => {
+      setIsLoading(true);
+      try {
+        const userRecentPlayeds = await getUserRecentPlayeds();
+        setRecentPlayeds(userRecentPlayeds.recommendations);
+      } catch (error) {
+        console.error("Erro ao buscar a biblioteca do usuário:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchRecentPlayeds();
+  }, []);
+
+  useEffect(() => {
+    const fetchMixes = async () => {
+      setIsLoading(true);
+      try {
+        const userMixes = await getUserMixes();
+        setMixes(userMixes.recommendations);
+      } catch (error) {
+        console.error("Erro ao buscar a biblioteca do usuário:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchMixes();
   }, []);
 
   const [backgroundAtivo, setBackgroundAtivo] = useState(false);
@@ -187,9 +256,7 @@ export const Main: React.FC = (): React.ReactNode => {
         </div>
         <div className="w-full mb-2">
           <div className="w-full flex justify-between items-center text-white">
-            <h1 className="spotify-font-bold text-2xl">
-              Suas músicas estão com saudade
-            </h1>
+            <h1 className="spotify-font-bold text-2xl">Feito para você</h1>
             <Link
               href={"#"}
               className="spotify-font-bold text-sm hover:border-b-2"
@@ -235,17 +302,19 @@ export const Main: React.FC = (): React.ReactNode => {
                       key={index}
                       className="flex flex-col p-2 rounded-md gap-2 cursor-pointer hover:bg-[#2e2e2e65] relative group"
                     >
-                      <Image
-                        src={recommendation.coverImage}
-                        width={200}
-                        height={200}
-                        sizes="(max-with: 160px) 100%"
-                        style={{ objectFit: "cover" }}
-                        alt={`Album ${index + 1}`}
-                        className="rounded-md"
-                      />
-                      <div className="cursor-pointer hover:scale-105 transition-all duration-500 ease-in-out absolute right-[17px] bottom-[60px] opacity-0 translate-y-3 scale-75 group-hover:opacity-100 group-hover:translate-y-0 group-hover:scale-100 bg-[#54ff79] rounded-full p-2 flex items-center justify-center">
-                        <FaPlay className="text-black text-lg " />
+                      <div className="relative">
+                        <Image
+                          src={recommendation.coverImage}
+                          width={200}
+                          height={200}
+                          sizes="(max-with: 160px) 100%"
+                          style={{ objectFit: "cover" }}
+                          alt={`Album ${index + 1}`}
+                          className="rounded-md max-h-[175px]"
+                        />
+                        <div className="cursor-pointer hover:scale-105 transition-all duration-500 right-[8%] bottom-[8%] ease-in-out absolute opacity-0 translate-y-3 scale-75 group-hover:opacity-100 group-hover:translate-y-0 group-hover:scale-100 bg-[#54ff79] rounded-full p-2 flex items-center justify-center">
+                          <FaPlay className="text-black text-lg " />
+                        </div>
                       </div>
 
                       <p className="text-[0.75rem] text-gray-400 spotify-font-bold">
@@ -279,7 +348,7 @@ export const Main: React.FC = (): React.ReactNode => {
                 slidesPerView={2.5} // Quantidade de slides visíveis por vez
                 loop={true} // Swiper faz loop infinito
               >
-                {recommendations.map((recommendation, index) => (
+                {longingSongs.map((recommendation, index) => (
                   <SwiperSlide key={index}>
                     <div className="flex flex-col p-2 rounded-md gap-2 cursor-pointer hover:bg-[#2e2e2e65]">
                       <Image
@@ -291,6 +360,9 @@ export const Main: React.FC = (): React.ReactNode => {
                         alt={`Album ${index + 1}`}
                         className="rounded-md"
                       />
+                      <h1 className="spotify-font-bold text-[0.9rem] text-white">
+                        {recommendation.name}
+                      </h1>
                       <p className="text-[0.75rem] text-gray-400 spotify-font-bold">
                         {recommendation.description.length > 42
                           ? `${recommendation.description.slice(0, 42)}...`
@@ -302,13 +374,62 @@ export const Main: React.FC = (): React.ReactNode => {
               </Swiper>
             ) : (
               <div className="w-full grid grid-cols-7">
-                {recommendations
-                  .slice(0, isTablet ? 5 : recommendations.length)
+                {longingSongs
+                  .slice(0, isTablet ? 5 : longingSongs.length)
                   .map((recommendation, index) => (
                     <div
                       key={index}
                       className="flex flex-col p-2 rounded-md gap-2 cursor-pointer hover:bg-[#2e2e2e65] relative group"
                     >
+                      <div className="relative">
+                        <Image
+                          src={recommendation.coverImage}
+                          width={200}
+                          height={200}
+                          sizes="(max-with: 160px) 100%"
+                          style={{ objectFit: "cover" }}
+                          alt={`Album ${index + 1}`}
+                          className="rounded-md max-h-[175px]"
+                        />
+                        <div className="cursor-pointer hover:scale-105 transition-all duration-500 right-[8%] bottom-[8%] ease-in-out absolute opacity-0 translate-y-3 scale-75 group-hover:opacity-100 group-hover:translate-y-0 group-hover:scale-100 bg-[#54ff79] rounded-full p-2 flex items-center justify-center">
+                          <FaPlay className="text-black text-lg " />
+                        </div>
+                      </div>
+                      <h1 className="spotify-font-bold text-[0.9rem] text-white">
+                        {recommendation.name}
+                      </h1>
+                      <p className="text-[0.75rem] text-gray-400 spotify-font-bold">
+                        {recommendation.description.length > 42
+                          ? `${recommendation.description.slice(0, 42)}...`
+                          : recommendation.description}
+                      </p>
+                    </div>
+                  ))}
+              </div>
+            )}
+          </div>
+        </div>
+        <div className="w-full mb-2">
+          <div className="w-full flex justify-between items-center text-white">
+            <h1 className="spotify-font-bold text-2xl">Tocados recentemente</h1>
+            <Link
+              href={"#"}
+              className="spotify-font-bold text-sm hover:border-b-2"
+            >
+              Mostrar tudo
+            </Link>
+          </div>
+
+          <div className="w-full">
+            {isMobile ? (
+              <Swiper
+                spaceBetween={10}
+                slidesPerView={2.5} // Quantidade de slides visíveis por vez
+                loop={true} // Swiper faz loop infinito
+              >
+                {recentPlayeds.map((recommendation, index) => (
+                  <SwiperSlide key={index}>
+                    <div className="flex flex-col p-2 rounded-md gap-1 cursor-pointer hover:bg-[#2e2e2e65]">
                       <Image
                         src={recommendation.coverImage}
                         width={200}
@@ -316,12 +437,46 @@ export const Main: React.FC = (): React.ReactNode => {
                         sizes="(max-with: 160px) 100%"
                         style={{ objectFit: "cover" }}
                         alt={`Album ${index + 1}`}
-                        className="rounded-md"
+                        className="rounded-md max-h-[140px]"
                       />
-                      <div className="cursor-pointer hover:scale-105 transition-all duration-500 ease-in-out absolute right-[17px] bottom-[60px] opacity-0 translate-y-3 scale-75 group-hover:opacity-100 group-hover:translate-y-0 group-hover:scale-100 bg-[#54ff79] rounded-full p-2 flex items-center justify-center">
-                        <FaPlay className="text-black text-lg " />
+                      <h1 className="spotify-font-bold text-[0.9rem] text-white">
+                        {recommendation.name}
+                      </h1>
+                      <p className="text-[0.75rem] text-gray-400 spotify-font-bold">
+                        {recommendation.description.length > 42
+                          ? `${recommendation.description.slice(0, 42)}...`
+                          : recommendation.description}
+                      </p>
+                    </div>
+                  </SwiperSlide>
+                ))}
+              </Swiper>
+            ) : (
+              <div className="w-full grid grid-cols-7">
+                {recentPlayeds
+                  .slice(0, isTablet ? 5 : recentPlayeds.length)
+                  .map((recommendation, index) => (
+                    <div
+                      key={index}
+                      className="flex flex-col p-2 rounded-md gap-1 cursor-pointer hover:bg-[#2e2e2e65] group"
+                    >
+                      <div className="relative">
+                        <Image
+                          src={recommendation.coverImage}
+                          width={200}
+                          height={200}
+                          sizes="(max-with: 160px) 100%"
+                          style={{ objectFit: "cover" }}
+                          alt={`Album ${index + 1}`}
+                          className="rounded-md max-h-[175px]"
+                        />
+                        <div className="cursor-pointer hover:scale-105 transition-all duration-500 right-[8%] bottom-[8%] ease-in-out absolute opacity-0 translate-y-3 scale-75 group-hover:opacity-100 group-hover:translate-y-0 group-hover:scale-100 bg-[#54ff79] rounded-full p-2 flex items-center justify-center">
+                          <FaPlay className="text-black text-lg " />
+                        </div>
                       </div>
-
+                      <h1 className="spotify-font-bold text-[0.9rem] text-white">
+                        {recommendation.name}
+                      </h1>
                       <p className="text-[0.75rem] text-gray-400 spotify-font-bold">
                         {recommendation.description.length > 42
                           ? `${recommendation.description.slice(0, 42)}...`
@@ -336,7 +491,7 @@ export const Main: React.FC = (): React.ReactNode => {
         <div className="w-full mb-2">
           <div className="w-full flex justify-between items-center text-white">
             <h1 className="spotify-font-bold text-2xl">
-              Suas músicas estão com saudade
+              Seus mixes mais ouvidos
             </h1>
             <Link
               href={"#"}
@@ -353,7 +508,7 @@ export const Main: React.FC = (): React.ReactNode => {
                 slidesPerView={2.5} // Quantidade de slides visíveis por vez
                 loop={true} // Swiper faz loop infinito
               >
-                {recommendations.map((recommendation, index) => (
+                {mixes.map((recommendation, index) => (
                   <SwiperSlide key={index}>
                     <div className="flex flex-col p-2 rounded-md gap-2 cursor-pointer hover:bg-[#2e2e2e65]">
                       <Image
@@ -376,98 +531,26 @@ export const Main: React.FC = (): React.ReactNode => {
               </Swiper>
             ) : (
               <div className="w-full grid grid-cols-7">
-                {recommendations
-                  .slice(0, isTablet ? 5 : recommendations.length)
+                {mixes
+                  .slice(0, isTablet ? 5 : mixes.length)
                   .map((recommendation, index) => (
                     <div
                       key={index}
                       className="flex flex-col p-2 rounded-md gap-2 cursor-pointer hover:bg-[#2e2e2e65] relative group"
                     >
-                      <Image
-                        src={recommendation.coverImage}
-                        width={200}
-                        height={200}
-                        sizes="(max-with: 160px) 100%"
-                        style={{ objectFit: "cover" }}
-                        alt={`Album ${index + 1}`}
-                        className="rounded-md"
-                      />
-                      <div className="cursor-pointer hover:scale-105 transition-all duration-500 ease-in-out absolute right-[17px] bottom-[60px] opacity-0 translate-y-3 scale-75 group-hover:opacity-100 group-hover:translate-y-0 group-hover:scale-100 bg-[#54ff79] rounded-full p-2 flex items-center justify-center">
-                        <FaPlay className="text-black text-lg " />
-                      </div>
-
-                      <p className="text-[0.75rem] text-gray-400 spotify-font-bold">
-                        {recommendation.description.length > 42
-                          ? `${recommendation.description.slice(0, 42)}...`
-                          : recommendation.description}
-                      </p>
-                    </div>
-                  ))}
-              </div>
-            )}
-          </div>
-        </div>
-        <div className="w-full mb-2">
-          <div className="w-full flex justify-between items-center text-white">
-            <h1 className="spotify-font-bold text-2xl">
-              Suas músicas estão com saudade
-            </h1>
-            <Link
-              href={"#"}
-              className="spotify-font-bold text-sm hover:border-b-2"
-            >
-              Mostrar tudo
-            </Link>
-          </div>
-
-          <div className="w-full">
-            {isMobile ? (
-              <Swiper
-                spaceBetween={10}
-                slidesPerView={2.5} // Quantidade de slides visíveis por vez
-                loop={true} // Swiper faz loop infinito
-              >
-                {recommendations.map((recommendation, index) => (
-                  <SwiperSlide key={index}>
-                    <div className="flex flex-col p-2 rounded-md gap-2 cursor-pointer hover:bg-[#2e2e2e65]">
-                      <Image
-                        src={recommendation.coverImage}
-                        width={200}
-                        height={200}
-                        sizes="(max-with: 160px) 100%"
-                        style={{ objectFit: "cover" }}
-                        alt={`Album ${index + 1}`}
-                        className="rounded-md"
-                      />
-                      <p className="text-[0.75rem] text-gray-400 spotify-font-bold">
-                        {recommendation.description.length > 42
-                          ? `${recommendation.description.slice(0, 42)}...`
-                          : recommendation.description}
-                      </p>
-                    </div>
-                  </SwiperSlide>
-                ))}
-              </Swiper>
-            ) : (
-              <div className="w-full grid grid-cols-7">
-                {recommendations
-                  .slice(0, isTablet ? 5 : recommendations.length)
-                  .map((recommendation, index) => (
-                    <div
-                      key={index}
-                      className="flex flex-col p-2 rounded-md gap-2 cursor-pointer hover:bg-[#2e2e2e65] relative group"
-                    >
-                      <Image
-                        src={recommendation.coverImage}
-                        width={200}
-                        height={200}
-                        sizes="(max-with: 160px) 100%"
-                        style={{ objectFit: "cover" }}
-                        alt={`Album ${index + 1}`}
-                        className="rounded-md"
-                      />
-                      <div className="cursor-pointer hover:scale-105 transition-all duration-500 ease-in-out absolute right-[17px] bottom-[60px] opacity-0 translate-y-3 scale-75 group-hover:opacity-100 group-hover:translate-y-0 group-hover:scale-100 bg-[#54ff79] rounded-full p-2 flex items-center justify-center">
-                        <FaPlay className="text-black text-lg " />
+                      <div className="relative">
+                        <Image
+                          src={recommendation.coverImage}
+                          width={200}
+                          height={200}
+                          sizes="(max-with: 160px) 100%"
+                          style={{ objectFit: "cover" }}
+                          alt={`Album ${index + 1}`}
+                          className="rounded-md max-h-[175px]"
+                        />
+                        <div className="cursor-pointer hover:scale-105 transition-all duration-500 right-[8%] bottom-[8%] ease-in-out absolute opacity-0 translate-y-3 scale-75 group-hover:opacity-100 group-hover:translate-y-0 group-hover:scale-100 bg-[#54ff79] rounded-full p-2 flex items-center justify-center">
+                          <FaPlay className="text-black text-lg " />
+                        </div>
                       </div>
 
                       <p className="text-[0.75rem] text-gray-400 spotify-font-bold">

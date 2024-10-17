@@ -16,10 +16,15 @@ const nextConfig = {
       },
       {
         protocol: 'https',
-        hostname: 'seed-mix-image.spotifycdn.com', // Adicione esta linha
-      },      {
+        hostname: 'seed-mix-image.spotifycdn.com',
+      },
+      {
         protocol: 'https',
-        hostname: 'newjams-images.scdn.co', // Adicione esta linha
+        hostname: 'newjams-images.scdn.co',
+      },
+      {
+        protocol: 'https',
+        hostname: 'image-cdn-ak.spotifycdn.com',
       },
     ],
   },
