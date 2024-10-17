@@ -326,7 +326,6 @@ export default function YourLibrary() {
                             )}
                           </TableCell>
 
-                          {/* Renderiza as colunas de "Data de edição" e "Você ouviu" apenas quando width >= 584 */}
                           {width >= 584 && (
                             <>
                               <TableCell>
@@ -335,8 +334,10 @@ export default function YourLibrary() {
                                 </p>
                               </TableCell>
                               <TableCell>
-                                {playlist.editedAt ? (
-                                  <BiSolidVolumeFull className="text-green-500 text-lg ml-auto" />
+                                {playlist.lastHeard ? (
+                                  <p className="text-[0.75rem] text-end text-gray-300">
+                                    {playlist.lastHeard}
+                                  </p>
                                 ) : (
                                   <span className="text-gray-300">Não</span>
                                 )}
